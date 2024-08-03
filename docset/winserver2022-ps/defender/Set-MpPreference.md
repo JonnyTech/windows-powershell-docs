@@ -2,7 +2,7 @@
 description: The Set-MpPreference cmdlet configures preferences for Windows Defender scans and updates.
 external help file: MSFT_MpPreference.cdxml-help.xml
 Module Name: Defender
-ms.date: 03/22/2023
+ms.date: 03/27/2024
 online version: https://learn.microsoft.com/powershell/module/defender/set-mppreference?view=windowsserver2022-ps&wt.mc_id=ps-gethelp
 schema: 2.0.0
 title: Set-MpPreference
@@ -15,9 +15,11 @@ Configures preferences for Windows Defender scans and updates.
 
 ## SYNTAX
 
-```
+
+```powershell
 Set-MpPreference [-ExclusionPath <String[]>] [-ExclusionExtension <String[]>] [-ExclusionProcess <String[]>]
  [-ExclusionIpAddress <String[]>] [-RealTimeScanDirection <ScanDirection>]
+ [-IntelTDTEnabled <UInt32>]
  [-QuarantinePurgeItemsAfterDelay <UInt32>] [-RemediationScheduleDay <Day>]
  [-RemediationScheduleTime <DateTime>] [-ReportingAdditionalActionTimeOut <UInt32>]
  [-ReportingCriticalFailureTimeOut <UInt32>] [-ReportingNonCriticalTimeOut <UInt32>]
@@ -36,7 +38,7 @@ Set-MpPreference [-ExclusionPath <String[]>] [-ExclusionExtension <String[]>] [-
  [-MAPSReporting <MAPSReportingType>] [-SubmitSamplesConsent <SubmitSamplesConsentType>]
  [-DisableAutoExclusions <Boolean>] [-DisablePrivacyMode <Boolean>] [-RandomizeScheduleTaskTimes <Boolean>]
  [-SchedulerRandomizationTime <UInt32>] [-DisableBehaviorMonitoring <Boolean>]
- [-DisableRealtimeMonitoring <Boolean>] [-DisableScriptScanning <Boolean>] [-DisableArchiveScanning <Boolean>]
+ [-DisableRealtimeMonitoring <Boolean>] [-DisableScriptScanning <Boolean>] [-DisableArchiveScanning <Boolean>] [-DisableCacheMaintenance <UInt32>]
  [-DisableCatchupFullScan <Boolean>] [-DisableCatchupQuickScan <Boolean>] [-DisableEmailScanning <Boolean>]
  [-DisableRemovableDriveScanning <Boolean>] [-DisableRestorePoint <Boolean>]
  [-DisableScanningMappedNetworkDrivesForFullScan <Boolean>] [-DisableScanningNetworkFiles <Boolean>]
@@ -54,8 +56,11 @@ Set-MpPreference [-ExclusionPath <String[]>] [-ExclusionExtension <String[]>] [-
  [-AttackSurfaceReductionRules_Actions <ASRRuleActionType[]>] [-EnableLowCpuPriority <Boolean>]
  [-EnableFileHashComputation <Boolean>] [-EnableFullScanOnBatteryPower <Boolean>] [-ProxyPacUrl <String>]
  [-ProxyServer <String>] [-ProxyBypass <String[]>] [-ForceUseProxyOnly <Boolean>]
+ [-OobeEnableRtpAndSigUpdate <Boolean>]
  [-DisableTlsParsing <Boolean>] [-DisableHttpParsing <Boolean>] [-DisableDnsParsing <Boolean>]
+ [-DisableFtpParsing <Boolean>] [-DisableSmtpParsing <Boolean>]
  [-DisableDnsOverTcpParsing <Boolean>] [-DisableSshParsing <Boolean>]
+ [-DisableNetworkProtectionPerfTelemetry <Boolean>]
  [-PlatformUpdatesChannel <UpdatesChannelType>] [-EngineUpdatesChannel <UpdatesChannelType>]
  [-SignaturesUpdatesChannel <UpdatesChannelType>] [-DisableGradualRelease <Boolean>]
  [-AllowNetworkProtectionDownLevel <Boolean>] [-AllowDatagramProcessingOnWinServer <Boolean>]
@@ -85,15 +90,17 @@ The following table provides remediation action values for detected threats at l
 ## EXAMPLES
 
 ### Example 1: Schedule to check for definition updates everyday
-```
+
+```sql
 PS C:\> Set-MpPreference -SignatureScheduleDay Everyday
 ```
 
 This command configures preferences to check for definition updates every day.
 
 ### Example 2: Schedule a time of day to check for definition updates
-```
-PS C:\> Set-MpPreference -SignatureScheduleTime 120
+
+```sql
+PS C:\> Set-MpPreference -SignatureScheduleTime 02:00:00
 ```
 
 This command configures preferences to check for definition updates 120 minutes after midnight on days when it's scheduled to check.
@@ -394,6 +401,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -DisableCacheMaintenance
+Defines whether the cache maintenance idle task will perform the cache maintenance or not. Allowed values are 1 - cache maintenance is disabled, and 0 - cache maintenance is enabled (default).
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases: dcm
+
+Required: False
+Position: Named
+Default value: 0 
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -DisableCatchupFullScan
 Indicates whether Windows Defender runs catch-up scans for scheduled full scans.
 A computer can miss a scheduled scan, usually because the computer is turned off at the scheduled time.
@@ -406,7 +428,7 @@ Aliases: dcfsc
 
 Required: False
 Position: Named
-Default value: True
+Default value: 0 
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -484,6 +506,21 @@ Aliases: ddnsp
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -DisableFtpParsing
+Specifies whether to disable FTP parsing for network protection.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases: dfp
+
+Required: False
+Position: Named
+Default value: 0
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -574,6 +611,24 @@ Aliases: dioavp
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -DisableNetworkProtectionPerfTelemetry 
+This setting disables the gathering and sending of performance telemetry from network protection. 
+The accepted values are 0 and 1.
+- 1- Network protection telemetry is disabled.
+- 0 (Default) - Network protection telemetry is enabled.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases: dnpp
+
+Required: False
+Position: Named
+Default value: 0
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -719,6 +774,24 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -DisableSmtpParsing 
+This setting disables SMTP parsing for network protection.
+The accepted values are 0 and 1.
+- 1 - SMTP parsing is disabled.
+- 0 (Default) - SMTP parsing is enabled.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases: dsp
+
+Required: False
+Position: Named
+Default value: 0
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -DisableTlsParsing
 Specifies whether to disable inspection of TLS traffic.
 Network protection inspects TLS traffic (also known as HTTPS traffic) to see if a connection is being made to a malicious website, and to provide metadata to behavior monitoring. TLS connections to malicious websites can also be blocked if "-EnableNetworkProtection" is set to enabled. HTTP inspection can be disabled by setting this value to "$true". By default, network protection inspects TLS traffic.
@@ -750,7 +823,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -EnableDnsSinkhole
+### -EnableConvertWarnToBlock
+This setting controls whether network protection blocks network traffic instead of displaying a warning. This setting can be manually controlled by setting it to `1` to enable and `0` to disable.
+
+```yaml
+Type: ASRRuleActionType
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -EnableDnsSinkhole (Deprecated)
 Specifies whether to examine DNS traffic to detect and sinkhole DNS exfiltration attempts and other DNS based malicious attacks.
 Network protection can inspect the DNS traffic of a machine and, in conjunction with behavior monitoring, detect and sink hole DNS exfiltration attempts, and other DNS based malicious attacks. Set this configuration to "$true" to enable this feature.
 
@@ -815,6 +903,36 @@ Accept wildcard characters: False
 ### -EnableNetworkProtection
 Specifies how the network protection service handles web-based malicious threats, including phishing and malware.
 Possible values are Disabled, Enabled, and AuditMode.
+
+```yaml
+Type: ASRRuleActionType
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### Enable UdpReceiveOffload: 
+Specifies whether UDP receive offload support in Network Protection is enabled, resulting in potentially higher UDP bandwidth in the inbound direction. Starting with platform version `4.18.24030`, Microsoft will gradually move this support default from disabled to enabled. This setting can be manually controlled by setting it to `1` to enable and `0` to disable.
+
+```yaml
+Type: ASRRuleActionType
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### Enable UdpSegmentationOffload: 
+Specifies whether UDP segmentation offload support in Network Protection is enabled, resulting in potentially higher UDP bandwidth in the outbound direction. Starting with platform version `4.18.24030`, Microsoft will gradually move this support default from disabled to enabled. This setting can be manually controlled by setting it to `1` to enable and `0` to disable.
 
 ```yaml
 Type: ASRRuleActionType
@@ -967,6 +1085,26 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -IntelTDTEnabled
+This policy setting configures the Intel TDT integration level for Intel TDT-capable devices.
+The acceptable values for this parameter are:
+- 0 (Default) - If you don't configure this setting, the default value will be applied. The default value is controlled by Microsoft security intelligence updates. Microsoft will enable Intel TDT if there is a known threat.
+- 1 - If you configure this setting to enabled, Intel TDT integration will turn on.
+- 2 - If you configure this setting to disabled, Intel TDT integration will turn off.
+
+```yaml
+Type: UInt32
+Parameter Sets: (All)
+Aliases: itdte
+Accepted values: 0,1 and 2
+
+Required: False
+Position: Named
+Default value: 0
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -LowThreatDefaultAction
 Specifies which automatic remediation action to take for a low level threat.
 The acceptable values for this parameter are:
@@ -1053,6 +1191,26 @@ Accepted values: Clean, Quarantine, Remove, Allow, UserDefined, NoAction, Block
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OobeEnableRtpAndSigUpdate
+
+This setting allows you to configure whether real-time protection and Security Intelligence Updates are enabled during Out of Box experience (OOBE).
+
+Valid values are:
+- True - If you enable this setting, real-time protection and Security Intelligence Updates are enabled during OOBE.
+- False (Default) - If you either disable or don't configure this setting, real-time protection and Security Intelligence Updates during OOBE aren't enabled.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases: 
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -1301,7 +1459,7 @@ The acceptable values for this parameter are: integers from 5 through 100, and t
 Windows Defender does not exceed the percentage of CPU usage that you specify.
 The default value is 50.
 
-Note: This is not a hard limit but rather a guidance for the scanning engine to not exceed this maximum on average.
+Note: This is not a hard limit but rather a guidance for the scanning engine to not exceed this maximum on average. If ScanOnlyIfIdleEnabled (instructing the product to scan only when the computer is not in use) and DisableCpuThrottleOnIdleScans (instructing the product to disable CPU throttling on idle scans) are both enabled, then the value of ScanAvgCPULoadFactor is ignored.
 
 ```yaml
 Type: Byte
@@ -1829,6 +1987,25 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ThrottleForScheduledScanOnly
+A CPU usage limit can be applied to scheduled scans only, or to scheduled and custom scans. The default value applies a CPU usage limit to scheduled scans only.
+The acceptable values for this parameter are:
+- 1 (Default) - If you enable this setting, CPU throttling will apply only to scheduled scans.
+- 0 - If you disable this setting, CPU throttling will apply to scheduled and custom scans.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases: 
+
+Required: False
+Position: Named
+Default value: 1
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+
 ### -UILockdown
 Indicates whether to disable UI lockdown mode.
 If you specify a value of $True, Windows Defender disables UI lockdown mode.
@@ -1883,3 +2060,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 [Get-MpPreference](./Get-MpPreference.md)
 
 [Remove-MpPreference](./Remove-MpPreference.md)
+
